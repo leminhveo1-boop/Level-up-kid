@@ -132,7 +132,7 @@ export default function ParentDashboard() {
 
           <div className="space-y-1">
             <h2 className="text-lg font-black text-forest-dark uppercase tracking-wider">Cửa Phòng Bố Mẹ</h2>
-            <p className="text-[10.5px] text-gray-500">Mã PIN mặc định là <strong className="text-amber">1234</strong>. Vui lòng nhập để tiếp tục quản trị.</p>
+            <p className="text-[10.5px] text-gray-500">Vui lòng nhập mã PIN bảo mật để tiếp tục quản trị.</p>
           </div>
 
           <div className="space-y-2">
