@@ -61,6 +61,33 @@ export default function ParentDashboard() {
   const [newPin, setNewPin] = useState("");
   const [pinChangeSuccess, setPinChangeSuccess] = useState("");
 
+  // Preset task templates for quick selection
+  const taskTemplates = [
+    { title: "🧹 Rửa bát chén sạch sẽ", category: "help", exp: 15, points: 15, gold: 2, icon: "🧹" },
+    { title: "✨ Quét & lau nhà gọn gàng", category: "help", exp: 20, points: 20, gold: 3, icon: "✨" },
+    { title: "🌿 Tưới cây & chăm vườn", category: "help", exp: 10, points: 10, gold: 1, icon: "🌿" },
+    { title: "🗑️ Tự giác đi đổ rác", category: "help", exp: 10, points: 10, gold: 1, icon: "🗑️" },
+    { title: "📚 Đọc sách 20 phút", category: "intellect", exp: 25, points: 25, gold: 1, icon: "📚" },
+    { title: "🇬🇧 Học Tiếng Anh 15 phút", category: "intellect", exp: 25, points: 25, gold: 1, icon: "🇬🇧" },
+    { title: "✍️ Hoàn thành bài tập hè", category: "intellect", exp: 30, points: 30, gold: 2, icon: "✍️" },
+    { title: "🛌 Gấp chăn màn gọn gàng", category: "discipline", exp: 15, points: 15, gold: 1, icon: "🛌" },
+    { title: "💤 Đi ngủ trước 22h tối", category: "discipline", exp: 20, points: 20, gold: 1, icon: "💤" },
+    { title: "🦷 Đánh răng đúng giờ", category: "discipline", exp: 10, points: 10, gold: 0, icon: "🦷" },
+    { title: "🏃 Tập thể dục buổi sáng 10p", category: "strength", exp: 20, points: 20, gold: 1, icon: "🏃" },
+    { title: "🪢 Nhảy dây 100 cái liên tục", category: "strength", exp: 15, points: 15, gold: 1, icon: "🪢" },
+    { title: "🎨 Vẽ tranh hoặc tô màu", category: "creative", exp: 20, points: 20, gold: 1, icon: "🎨" },
+    { title: "🎹 Luyện đàn / nhạc cụ 15p", category: "creative", exp: 25, points: 25, gold: 1, icon: "🎹" },
+  ];
+
+  const applyTaskTemplate = (template) => {
+    if (!template) return;
+    setTaskTitle(template.title);
+    setTaskCategory(template.category);
+    setTaskExp(template.exp);
+    setTaskPoints(template.points);
+    setTaskGold(template.gold);
+  };
+
   useEffect(() => {
     if (isLoaded && !charName) {
       router.push("/");
@@ -370,17 +397,100 @@ export default function ParentDashboard() {
           
           {/* Quick Create Task Form */}
           <form onSubmit={handleAddTask} className="bg-sand-light border border-sand p-3.5 rounded-2xl space-y-3">
-            <div className="text-[10px] font-black text-forest uppercase tracking-wider">⚡ Tạo Nhiệm Vụ Tùy Chỉnh</div>
+            <div className="text-[10px] font-black text-forest uppercase tracking-wider">⚡ Thiết Lập Nhiệm Vụ Nhanh</div>
             
-            <input
-              type="text"
-              value={taskTitle}
-              onChange={(e) => setTaskTitle(e.target.value)}
-              placeholder="Nhập tên nhiệm vụ... (ví dụ: Tưới cây 🌲)"
-              className="w-full bg-white border border-sand rounded-xl px-3 py-2 text-xs font-bold text-forest-dark focus:outline-none focus:border-forest"
-              maxLength={40}
-              required
-            />
+            {/* Template Dropdown Select */}
+            <div className="space-y-1">
+              <label className="text-[9px] font-bold text-gray-500 uppercase tracking-wide flex items-center gap-0.5">
+                💡 Gợi Ý Nhiệm Vụ Mẫu:
+              </label>
+              <select
+                onChange={(e) => {
+                  const selectedIdx = e.target.value;
+                  if (selectedIdx !== "") {
+                    applyTaskTemplate(taskTemplates[selectedIdx]);
+                    e.target.value = ""; // Reset dropdown after selection
+                  }
+                }}
+                className="w-full bg-white border border-sand rounded-xl p-2 text-xs font-bold text-forest focus:outline-none focus:border-forest"
+                defaultValue=""
+              >
+                <option value="" disabled>-- Chọn một nhiệm vụ mẫu có sẵn --</option>
+                <optgroup label="🤝 Việc Nhà / Giúp Đỡ">
+                  {taskTemplates.filter(t => t.category === "help").map((t, idx) => (
+                    <option key={t.title} value={taskTemplates.indexOf(t)}>
+                      {t.icon} {t.title} (EXP: {t.exp} | ⭐: {t.points} | 🪙: {t.gold})
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="🧠 Học Tập / Trí Tuệ">
+                  {taskTemplates.filter(t => t.category === "intellect").map((t, idx) => (
+                    <option key={t.title} value={taskTemplates.indexOf(t)}>
+                      {t.icon} {t.title} (EXP: {t.exp} | ⭐: {t.points} | 🪙: {t.gold})
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="⚡ Tự Lập / Kỷ Luật">
+                  {taskTemplates.filter(t => t.category === "discipline").map((t, idx) => (
+                    <option key={t.title} value={taskTemplates.indexOf(t)}>
+                      {t.icon} {t.title} (EXP: {t.exp} | ⭐: {t.points} | 🪙: {t.gold})
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="❤️ Sức Khỏe / Thể Lực">
+                  {taskTemplates.filter(t => t.category === "strength").map((t, idx) => (
+                    <option key={t.title} value={taskTemplates.indexOf(t)}>
+                      {t.icon} {t.title} (EXP: {t.exp} | ⭐: {t.points} | 🪙: {t.gold})
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="🎨 Năng Khiếu / Sáng Tạo">
+                  {taskTemplates.filter(t => t.category === "creative").map((t, idx) => (
+                    <option key={t.title} value={taskTemplates.indexOf(t)}>
+                      {t.icon} {t.title} (EXP: {t.exp} | ⭐: {t.points} | 🪙: {t.gold})
+                    </option>
+                  ))}
+                </optgroup>
+              </select>
+            </div>
+
+            {/* Quick tag items list */}
+            <div className="space-y-1">
+              <label className="text-[9px] font-bold text-gray-400 uppercase tracking-wide">
+                🔥 Việc Phổ Biến (Chạm 1 giây để chọn):
+              </label>
+              <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none select-none">
+                {[
+                  taskTemplates[0], // Rửa bát
+                  taskTemplates[4], // Đọc sách
+                  taskTemplates[7], // Gấp chăn
+                  taskTemplates[10], // Thể dục
+                ].map((template) => (
+                  <button
+                    key={template.title}
+                    type="button"
+                    onClick={() => applyTaskTemplate(template)}
+                    className="flex-shrink-0 bg-white hover:bg-sand border border-sand px-2.5 py-1 rounded-full text-[10px] font-bold text-forest-dark flex items-center gap-1 transition-all active:scale-95 shadow-sm"
+                  >
+                    <span>{template.icon}</span>
+                    <span>{template.title.split(" ")[1]}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[9px] font-bold text-gray-500 uppercase tracking-wide">Tên Nhiệm Vụ:</label>
+              <input
+                type="text"
+                value={taskTitle}
+                onChange={(e) => setTaskTitle(e.target.value)}
+                placeholder="Nhập tên nhiệm vụ hoặc chỉnh sửa gợi ý phía trên..."
+                className="w-full bg-white border border-sand rounded-xl px-3 py-2 text-xs font-bold text-forest-dark focus:outline-none focus:border-forest"
+                maxLength={40}
+                required
+              />
+            </div>
 
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="space-y-1">
