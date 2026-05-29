@@ -9,7 +9,7 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "Hành Trình Anh Hùng Quốc Bảo - Game Phát Triển Bản Thân",
+  title: "levelup Kid - Game Phát Triển Bản Thân",
   description: "Biến quá trình phát triển bản thân, học tập và rèn luyện của trẻ thành một cuộc phiêu lưu nhập vai kỳ thú ngoài đời thực.",
   manifest: "/manifest.json",
   icons: {

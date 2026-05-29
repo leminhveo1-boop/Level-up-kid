@@ -49,7 +49,7 @@ export default function LandingPage() {
         <div className="space-y-2">
           <h1 className="text-3xl font-extrabold text-forest tracking-tight uppercase leading-tight drop-shadow-sm">
             Hành Trình Anh Hùng <br />
-            <span className="text-amber">Quốc Bảo</span>
+            <span className="text-amber">levelup Kid</span>
           </h1>
           <p className="text-sm font-medium text-forest-dark opacity-90 max-w-xs mx-auto">
             Biến quá trình phát triển bản thân ngoài đời thực thành một trò chơi phiêu lưu kỳ thú!

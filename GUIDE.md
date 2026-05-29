@@ -1,5 +1,5 @@
-# 🌳 CẨM NANG PHIÊU LƯU - HÀNH TRÌNH ANH HÙNG QUỐC BẢO
-> **Dành cho Bé Quốc Bảo (Dũng Sĩ) & Bố Mẹ (Nhà Quản Trị)**
+# 🌳 CẨM NANG PHIÊU LƯU - levelup Kid
+> **Dành cho Bé (Dũng Sĩ) & Bố Mẹ (Nhà Quản Trị)**
 
 Chào mừng bố mẹ và bé Quốc Bảo bước vào **Hành Trình Anh Hùng Mùa Hè**! Đây không chỉ là một ứng dụng quản lý nhiệm vụ thông thường, mà là một hệ thống game hóa (Gamification OS) nhập vai ngoài đời thật giúp con tự giác xây dựng thói quen tốt, rèn luyện bản thân và nhận thưởng một cách khoa học thông qua **Hệ Thống Khai Thác Anh Hùng (Hero Mining System)** hoàn toàn mới!
 

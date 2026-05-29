@@ -43,7 +43,7 @@ export function GameProvider({ children }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Character state
-  const [charName, setCharName] = useState("Quốc Bảo");
+  const [charName, setCharName] = useState("Chiến Binh");
   const [charClass, setCharClass] = useState("Warrior"); // Warrior, Mage, Druid
   const [level, setLevel] = useState(1);
   const [exp, setExp] = useState(0);
@@ -108,7 +108,7 @@ export function GameProvider({ children }) {
   // Parent controls
   const [parentPin, setParentPin] = useState("1234");
   const [encouragements, setEncouragements] = useState([
-    { id: "e1", text: "Chúc Chiến Binh Quốc Bảo một mùa hè tràn đầy năng lượng! Cố lên con trai! 💪", read: false },
+    { id: "e1", text: "Chúc Chiến Binh một hành trình tràn đầy năng lượng! Cố lên con nhé! 💪", read: false },
   ]);
 
   // Sound helper (Web Audio API)
@@ -195,7 +195,7 @@ export function GameProvider({ children }) {
         const loadedHeroCoins = data.heroCoins !== undefined ? data.heroCoins : oldGold;
         // -----------------------------------------------------------------
 
-        setCharName(data.charName || "Quốc Bảo");
+        setCharName(data.charName || "Chiến Binh");
         setCharClass(data.charClass || "Warrior");
         setLevel(data.level || 1);
         setExp(data.exp || 0);
@@ -515,7 +515,7 @@ export function GameProvider({ children }) {
       if (uncompletedMandatoryTasks.length > 0) {
         return { 
           success: false, 
-          message: `Quốc Bảo chưa làm xong các nhiệm vụ BẮT BUỘC hằng ngày! Hãy hoàn thành bài vở và tập thể dục trước nhé! ⚠️` 
+          message: `${charName} chưa làm xong các nhiệm vụ BẮT BUỘC hằng ngày! Hãy hoàn thành bài vở và tập thể dục trước nhé! ⚠️` 
         };
       }
     }
@@ -542,7 +542,7 @@ export function GameProvider({ children }) {
       if (heroCoins < reward.cost) {
         return {
           success: false,
-          message: `Quốc Bảo chưa đủ Hero Coins! Cần thêm ${reward.cost - heroCoins} 🪙 nữa nhé! ⚠️`
+          message: `${charName} chưa đủ Hero Coins! Cần thêm ${reward.cost - heroCoins} 🪙 nữa nhé! ⚠️`
         };
       }
       setHeroCoins((prev) => Math.max(0, prev - reward.cost));
@@ -552,7 +552,7 @@ export function GameProvider({ children }) {
       if (points < cost) {
         return {
           success: false,
-          message: `Quốc Bảo chưa đủ Điểm Tích Lũy! Cần thêm ${cost - points} ⭐ nữa nhé! ⚠️`
+          message: `${charName} chưa đủ Điểm Tích Lũy! Cần thêm ${cost - points} ⭐ nữa nhé! ⚠️`
         };
       }
       setPoints((prev) => Math.max(0, prev - cost));
@@ -917,7 +917,7 @@ export function GameProvider({ children }) {
   // Full reset (Start fresh adventure)
   const resetEntireGame = () => {
     localStorage.removeItem("quocbao_game_state");
-    setCharName("Quốc Bảo");
+    setCharName("Chiến Binh");
     setCharClass("Warrior");
     setLevel(1);
     setExp(0);
@@ -937,7 +937,7 @@ export function GameProvider({ children }) {
     setLastPointsGain(null);
     setLastResetDate(new Date().toLocaleDateString("vi-VN"));
     setEncouragements([
-      { id: "e1", text: "Chào mừng Quốc Bảo bước vào Hành trình anh hùng mùa hè! Con sẵn sàng chưa? 🌳", read: false }
+      { id: "e1", text: "Chào mừng con bước vào Hành trình anh hùng! Con sẵn sàng chưa? 🌳", read: false }
     ]);
     setInventory({
       eggs: { base: 0, dragon: 0, wolf: 0 },

@@ -38,7 +38,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const { setCharName, setCharClass, setStats, setStreak, setEnergy } = useGame();
   
-  const [nameInput, setNameInput] = useState("Quốc Bảo");
+  const [nameInput, setNameInput] = useState("Chiến Binh");
   const [selectedClass, setSelectedClass] = useState("Warrior");
 
   const handleStartAdventure = () => {
