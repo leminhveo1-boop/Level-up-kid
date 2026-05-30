@@ -743,7 +743,7 @@ export default function DashboardPage() {
       )}
 
       {/* BOTTOM TAB NAVIGATION (Duolingo style) */}
-      <div className="absolute bottom-0 inset-x-0 bg-white border-t-2 border-sand p-2 flex items-center justify-around z-40 max-w-md mx-auto">
+      <div className="fixed bottom-0 inset-x-0 bg-white border-t-2 border-sand p-2 flex items-center justify-around z-40 max-w-md mx-auto">
         <button
           onClick={() => {}}
           className="flex flex-col items-center p-2 text-forest-medium space-y-0.5"

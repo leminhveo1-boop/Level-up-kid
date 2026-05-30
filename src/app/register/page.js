@@ -37,7 +37,7 @@ const CLASSES = [
 export default function RegisterPage() {
   const router = useRouter();
   const { setCharName, setCharClass, setStats, setStreak, setEnergy } = useGame();
-  
+
   const [nameInput, setNameInput] = useState("Chiến Binh");
   const [selectedClass, setSelectedClass] = useState("Warrior");
 
@@ -48,7 +48,7 @@ export default function RegisterPage() {
     }
 
     const chosenClassObj = CLASSES.find((c) => c.id === selectedClass);
-    
+
     // Set state
     setCharName(nameInput);
     setCharClass(selectedClass);
@@ -63,9 +63,9 @@ export default function RegisterPage() {
   return (
     <div className="flex flex-col flex-grow p-6 relative">
       <div className="absolute top-0 right-0 w-32 h-32 bg-forest-accent opacity-20 rounded-full blur-2xl -z-10"></div>
-      
+
       {/* Back button */}
-      <button 
+      <button
         onClick={() => router.push("/")}
         className="self-start text-xs font-bold text-gray-500 hover:text-forest-dark uppercase tracking-wider mb-4 flex items-center gap-1"
       >
@@ -94,7 +94,7 @@ export default function RegisterPage() {
       {/* Class Selection */}
       <div className="space-y-4 flex-grow">
         <label className="block text-xs font-black text-forest-dark uppercase tracking-wider">Chọn Lớp Nhân Vật</label>
-        
+
         <div className="space-y-3">
           {CLASSES.map((c) => {
             const isSelected = selectedClass === c.id;
@@ -102,16 +102,14 @@ export default function RegisterPage() {
               <button
                 key={c.id}
                 onClick={() => setSelectedClass(c.id)}
-                className={`w-full text-left bg-white border-2 rounded-2xl p-4 flex items-start gap-4 transition-all duration-100 ${
-                  isSelected 
-                    ? `border-forest shadow-game-forest translate-y-[-2px]` 
+                className={`w-full text-left bg-white border-2 rounded-2xl p-4 flex items-start gap-4 transition-all duration-100 ${isSelected
+                    ? `border-forest shadow-game-forest translate-y-[-2px]`
                     : "border-sand shadow-game-flat hover:border-sand-dark"
-                }`}
+                  }`}
               >
                 {/* Class Avatar */}
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl border-2 ${
-                  isSelected ? "bg-sand" : "bg-sand-light"
-                }`}>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl border-2 ${isSelected ? "bg-sand" : "bg-sand-light"
+                  }`}>
                   {c.emoji}
                 </div>
 
@@ -119,7 +117,7 @@ export default function RegisterPage() {
                 <div className="flex-grow space-y-1">
                   <h3 className="text-sm font-extrabold text-forest-dark">{c.title}</h3>
                   <p className="text-[11px] text-gray-500 leading-normal">{c.description}</p>
-                  
+
                   {/* Stats previews */}
                   <div className="flex flex-wrap gap-2 pt-1.5">
                     {Object.entries(c.baseStats).map(([key, val]) => {
@@ -129,20 +127,19 @@ export default function RegisterPage() {
                       if (key === "discipline") statLabel = "⚡ Kỷ luật";
                       if (key === "creative") statLabel = "🎨 Sáng tạo";
                       if (key === "help") statLabel = "🤝 Giúp đỡ";
-                      
+
                       // Highlight key stat of class
                       const isMainStat = (key === "strength" && c.id === "Warrior") ||
-                                       (key === "intellect" && c.id === "Mage") ||
-                                       (key === "help" && c.id === "Druid");
+                        (key === "intellect" && c.id === "Mage") ||
+                        (key === "help" && c.id === "Druid");
 
                       return (
-                        <span 
-                          key={key} 
-                          className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${
-                            isMainStat 
-                              ? "bg-amber-light border-amber text-amber" 
+                        <span
+                          key={key}
+                          className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${isMainStat
+                              ? "bg-amber-light border-amber text-amber"
                               : "bg-sand-light border-sand text-gray-500"
-                          }`}
+                            }`}
                         >
                           {statLabel}: {val}
                         </span>

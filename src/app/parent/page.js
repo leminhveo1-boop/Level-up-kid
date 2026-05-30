@@ -1223,7 +1223,7 @@ export default function ParentDashboard() {
       )}
 
       {/* BOTTOM TAB NAVIGATION */}
-      <div className="absolute bottom-0 inset-x-0 bg-white border-t-2 border-sand p-2 flex items-center justify-around z-40 max-w-md mx-auto">
+      <div className="fixed bottom-0 inset-x-0 bg-white border-t-2 border-sand p-2 flex items-center justify-around z-40 max-w-md mx-auto">
         <button
           onClick={() => router.push("/dashboard")}
           className="flex flex-col items-center p-2 text-gray-400 hover:text-forest space-y-0.5"
