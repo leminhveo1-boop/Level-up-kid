@@ -514,13 +514,11 @@ export default function ParentDashboard() {
                     // set default key compatible
                     if (newType === "eggs") setSelectedItemKey("base");
                     else if (newType === "potions") setSelectedItemKey("fire");
-                    else setSelectedItemKey("meat");
                   }}
                   className="w-full bg-white border border-sand rounded-xl p-2 text-xs font-bold text-forest-dark focus:outline-none"
                 >
                   <option value="eggs">🥚 Trứng Thú Cưng</option>
                   <option value="potions">🧪 Thuốc Ấp Nguyên Tố</option>
-                  <option value="foods">🥩 Thức Ăn Thú Cưng</option>
                 </select>
               </div>
 
@@ -543,13 +541,6 @@ export default function ParentDashboard() {
                       <option value="fire">🔥 Thuốc Lửa (Fire)</option>
                       <option value="ice">❄️ Thuốc Băng (Ice)</option>
                       <option value="magic">✨ Thuốc Thần Kỳ (Magic)</option>
-                    </>
-                  )}
-                  {selectedItemType === "foods" && (
-                    <>
-                      <option value="meat">🥩 Thịt Bò (Meat)</option>
-                      <option value="candy">🍬 Kẹo Ngọt (Candy)</option>
-                      <option value="leaf">🌿 Lá Cây (Leaf)</option>
                     </>
                   )}
                 </select>

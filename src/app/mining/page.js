@@ -9,6 +9,8 @@ export default function MiningCavePage() {
   const router = useRouter();
   const {
     isLoaded,
+    level,
+    stats,
     charName,
     energy,
     heroCoins,
@@ -113,12 +115,19 @@ export default function MiningCavePage() {
       let styleColor = "text-amber font-black";
       let prefix = "+";
       if (result.lootType === "legendary") styleColor = "text-red-500 font-extrabold text-lg animate-bounce";
+      else if (result.lootType === "diamond") styleColor = "text-sky-dark font-extrabold text-lg animate-bounce";
       else if (result.lootType === "epic") styleColor = "text-amber-dark font-black text-base";
       else if (result.lootType === "rare") styleColor = "text-sky-dark font-black";
 
+      let floatingTextVal = `${prefix}${result.coinReward} 🪙 ${result.isCritical ? "💪 SỨC MẠNH!" : ""}`;
+      if (result.isMaterial) {
+        floatingTextVal = result.lootType === "legendary" ? "🥚 TRỨNG HIẾM!" : "🧪 THUỐC ẤP!";
+        styleColor = result.lootType === "legendary" ? "text-amber font-extrabold animate-bounce text-xs" : "text-rose-500 font-extrabold text-xs";
+      }
+
       const newFloatingText = {
         id: Date.now() + Math.random(),
-        text: `${prefix}${result.coinReward} 🪙 ${result.isCritical ? "💪 SỨC MẠNH!" : ""}`,
+        text: floatingTextVal,
         styleColor,
         x: clickX,
         y: clickY - 20,
@@ -127,8 +136,12 @@ export default function MiningCavePage() {
       setFloatingTexts((prev) => [...prev, newFloatingText]);
 
       // Log update
-      if (result.lootType === "legendary") {
+      if (result.isMaterial) {
+        setCaveLog(`🎉 CỰC KỲ MAY MẮN! Con đã đào trúng: ${result.title}!`);
+      } else if (result.lootType === "legendary") {
         setCaveLog(`🎉 QUÁ KHỦNG KHIẾP! ${charName} đã đào được ${result.title} cực hiếm và nhận ngay +${result.coinReward} 🪙! 🎉`);
+      } else if (result.lootType === "diamond") {
+        setCaveLog(`💎 SIÊU CẤP MAY MẮN! ${charName} đã đào được ${result.title} cực đỉnh và nhận +${result.coinReward} 🪙!`);
       } else if (result.lootType === "epic") {
         setCaveLog(`👑 Tuyệt vời! Con đã đào được ${result.title} nhận +${result.coinReward} 🪙!`);
       } else {
@@ -180,6 +193,41 @@ export default function MiningCavePage() {
             <span>⛏️</span>
           </h2>
           <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Tiêu hao 1 Năng Lượng ⚡ = 1 Click Đào Kho Báu 💎</p>
+        </div>
+
+        {/* EFFORT-BASED MINING FORMULA BREAKDOWN */}
+        <div className="bg-sand-light/50 border border-sand p-3.5 rounded-3xl text-left text-[9px] font-bold text-gray-500 space-y-1.5 select-none">
+          <p className="text-[10px] font-black text-forest-dark uppercase tracking-wider flex items-center gap-1 select-none">
+            <span>💪</span>
+            <span>Nỗ Lực Rèn Luyện = Sức Mạng Khai Thác</span>
+          </p>
+          <div className="grid grid-cols-2 gap-2 text-[8px] font-extrabold uppercase">
+            <div className="bg-white p-2 rounded-xl border border-sand/50">
+              <span className="text-gray-400 block text-[7px]">Base (Cấp độ con):</span>
+              <span className="text-forest text-[11px] font-black">+{1 + Math.floor(level / 2)} COIN</span>
+              <span className="text-gray-400 block text-[6.5px] font-normal leading-tight normal-case mt-0.5">Tăng khi con thăng cấp (Level {level})</span>
+            </div>
+            <div className="bg-white p-2 rounded-xl border border-sand/50">
+              <span className="text-gray-400 block text-[7px]">Chuỗi Kỷ Luật (Streak):</span>
+              <span className="text-amber-dark text-[11px] font-black">+{Math.floor(streak / 3)} COIN</span>
+              <span className="text-gray-400 block text-[6.5px] font-normal leading-tight normal-case mt-0.5">Tăng mỗi 3 ngày giữ chuỗi (Streak {streak})</span>
+            </div>
+            <div className="bg-white p-2 rounded-xl border border-sand/50">
+              <span className="text-gray-400 block text-[7px]">Chỉ Số Rèn Luyện (Stats):</span>
+              <span className="text-sky-dark text-[11px] font-black">+{Math.floor(((stats?.strength || 10) + (stats?.intellect || 10) + (stats?.discipline || 10) + (stats?.creative || 10) + (stats?.help || 10)) / 100)} COIN</span>
+              <span className="text-gray-400 block text-[6.5px] font-normal leading-tight normal-case mt-0.5">Cộng 1 xu cho mỗi 100 điểm chỉ số rèn luyện</span>
+            </div>
+            <div className="bg-white p-2 rounded-xl border border-sand/50">
+              <span className="text-gray-400 block text-[7px]">Đồng Hành Thú Cưng:</span>
+              <span className="text-rose-500 text-[11px] font-black">
+                +{ (activePet || activeMount) && Math.floor(Math.floor(((stats?.strength || 10) + (stats?.intellect || 10) + (stats?.discipline || 10) + (stats?.creative || 10) + (stats?.help || 10)) / 50) / 2) > 0 
+                  ? Math.floor(Math.floor(((stats?.strength || 10) + (stats?.intellect || 10) + (stats?.discipline || 10) + (stats?.creative || 10) + (stats?.help || 10)) / 50) / 2) 
+                  : 0
+                } COIN
+              </span>
+              <span className="text-gray-400 block text-[6.5px] font-normal leading-tight normal-case mt-0.5">Cộng theo cấp thú cưng (Stats / 50)</span>
+            </div>
+          </div>
         </div>
 
         {/* TAB SWITCHER */}
@@ -439,9 +487,9 @@ export default function MiningCavePage() {
                 <span>Túi Đồ Vật Phẩm Thú Cưng</span>
               </h3>
               
-              <div className="grid grid-cols-3 gap-2 select-none">
+              <div className="grid grid-cols-2 gap-3 select-none">
                 {/* Eggs section */}
-                <div className="bg-sand-light border border-sand p-2 rounded-2xl flex flex-col items-center justify-center text-center space-y-1 select-none">
+                <div className="bg-sand-light border border-sand p-2.5 rounded-2xl flex flex-col items-center justify-center text-center space-y-1 select-none">
                   <span className="text-[10px] font-black text-forest-dark uppercase tracking-wider">🥚 Trứng</span>
                   <div className="text-[10px] text-gray-500 font-bold space-y-0.5">
                     <p>Thường: <span className="text-forest font-black">{inventory?.eggs?.base || 0}</span></p>
@@ -451,22 +499,12 @@ export default function MiningCavePage() {
                 </div>
 
                 {/* Potions section */}
-                <div className="bg-sand-light border border-sand p-2 rounded-2xl flex flex-col items-center justify-center text-center space-y-1 select-none">
+                <div className="bg-sand-light border border-sand p-2.5 rounded-2xl flex flex-col items-center justify-center text-center space-y-1 select-none">
                   <span className="text-[10px] font-black text-forest-dark uppercase tracking-wider">🧪 Thuốc Ấp</span>
                   <div className="text-[10px] text-gray-500 font-bold space-y-0.5">
                     <p>🔥 Lửa: <span className="text-terracotta font-black">{inventory?.potions?.fire || 0}</span></p>
                     <p>❄️ Băng: <span className="text-sky-dark font-black">{inventory?.potions?.ice || 0}</span></p>
                     <p>✨ Phép: <span className="text-clay font-black">{inventory?.potions?.magic || 0}</span></p>
-                  </div>
-                </div>
-
-                {/* Foods section */}
-                <div className="bg-sand-light border border-sand p-2 rounded-2xl flex flex-col items-center justify-center text-center space-y-1 select-none">
-                  <span className="text-[10px] font-black text-forest-dark uppercase tracking-wider">🥩 Thức Ăn</span>
-                  <div className="text-[10px] text-gray-500 font-bold space-y-0.5">
-                    <p>🥩 Thịt: <span className="text-terracotta font-black">{inventory?.foods?.meat || 0}</span></p>
-                    <p>🍬 Kẹo: <span className="text-amber font-black">{inventory?.foods?.candy || 0}</span></p>
-                    <p>🌿 Lá: <span className="text-forest font-black">{inventory?.foods?.leaf || 0}</span></p>
                   </div>
                 </div>
               </div>
@@ -603,10 +641,10 @@ export default function MiningCavePage() {
                           </div>
                         </div>
 
-                        {/* Intimacy / Feed Progress bar */}
+                        {/* Intimacy / Growth Progress bar */}
                         <div className="space-y-1 select-none">
                           <div className="flex items-center justify-between text-[8px] font-black text-gray-400 uppercase tracking-wider">
-                            <span>Độ Thân Mật (Tiến hóa)</span>
+                            <span>Tiến Trình Lớn Lên (Stats)</span>
                             <span className="text-forest-medium">{pet.feedProgress}%</span>
                           </div>
                           
@@ -618,57 +656,37 @@ export default function MiningCavePage() {
                           </div>
                         </div>
 
-                        {/* Pet Actions Panel */}
-                        <div className="pt-1 flex items-center gap-2 flex-wrap">
-                          {/* Feed triggers if intimacy < 100 */}
-                          {pet.feedProgress < 100 ? (
-                            <div className="flex items-center gap-1.5 flex-grow">
-                              <span className="text-[8px] font-black text-gray-400 uppercase select-none">Cho ăn:</span>
-                              
-                              <button
-                                onClick={() => handleFeed(pet.id, "meat")}
-                                disabled={inventory?.foods?.meat < 1}
-                                className={`text-[9.5px] font-black px-2 py-1 rounded-lg border flex items-center gap-0.5 active:scale-95 transition-transform ${
-                                  inventory?.foods?.meat > 0 
-                                    ? "bg-white border-red-200 text-terracotta hover:bg-rose-50" 
-                                    : "bg-gray-50 border-gray-150 text-gray-300 cursor-not-allowed"
-                                }`}
-                                type="button"
-                              >
-                                🥩 ({inventory?.foods?.meat || 0})
-                              </button>
-
-                              <button
-                                onClick={() => handleFeed(pet.id, "candy")}
-                                disabled={inventory?.foods?.candy < 1}
-                                className={`text-[9.5px] font-black px-2 py-1 rounded-lg border flex items-center gap-0.5 active:scale-95 transition-transform ${
-                                  inventory?.foods?.candy > 0 
-                                    ? "bg-white border-yellow-200 text-amber hover:bg-amber-light/20" 
-                                    : "bg-gray-50 border-gray-150 text-gray-300 cursor-not-allowed"
-                                }`}
-                                type="button"
-                              >
-                                🍬 ({inventory?.foods?.candy || 0})
-                              </button>
-
-                              <button
-                                onClick={() => handleFeed(pet.id, "leaf")}
-                                disabled={inventory?.foods?.leaf < 1}
-                                className={`text-[9.5px] font-black px-2 py-1 rounded-lg border flex items-center gap-0.5 active:scale-95 transition-transform ${
-                                  inventory?.foods?.leaf > 0 
-                                    ? "bg-white border-green-200 text-forest hover:bg-green-50" 
-                                    : "bg-gray-50 border-gray-150 text-gray-300 cursor-not-allowed"
-                                }`}
-                                type="button"
-                              >
-                                🌿 ({inventory?.foods?.leaf || 0})
-                              </button>
-                            </div>
-                          ) : (
-                            <span className="text-[9px] font-black text-amber-dark uppercase tracking-widest animate-pulse flex-grow select-none">
-                              👑 ĐÃ TIẾN HÓA THÀNH THÚ CƯỠI! 👑
+                        {/* Pet Status Details */}
+                        <div className="bg-sand-light/50 border border-sand/40 p-2.5 rounded-xl text-[9px] font-bold text-gray-500 space-y-1 select-none">
+                          <div className="flex justify-between items-center">
+                            <span>Cấp Độ Thú Cưng:</span>
+                            <span className="text-forest font-black uppercase">Cấp {pet.level || 0}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span>Trạng Thái:</span>
+                            <span className="text-amber-dark font-black uppercase">
+                              {pet.level >= 5 ? "🦖 Thú Cưỡi Khổng Lồ" : pet.level >= 3 ? "🐾 Thú Niên Thiếu" : "🐣 Thú Sơ Sinh (Baby)"}
                             </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span>Buff Đào Mỏ:</span>
+                            <span className="text-forest-medium font-black">
+                              {pet.level >= 5 ? "+15% Xu" : pet.level >= 3 ? "+10% Xu" : pet.level >= 1 ? "+5% Xu" : "+0% Xu"}
+                            </span>
+                          </div>
+                          {pet.level >= 5 && (
+                            <div className="flex justify-between items-center text-amber-dark font-black">
+                              <span>Buff Rèn Luyện:</span>
+                              <span>+10% Năng Lượng ⚡</span>
+                            </div>
                           )}
+                        </div>
+
+                        {/* Pet Actions Panel */}
+                        <div className="pt-1 flex items-center justify-between gap-2 flex-wrap">
+                          <span className="text-[8px] font-black text-gray-400 uppercase tracking-wider select-none max-w-[200px]">
+                            {pet.level >= 5 ? "✨ Thú cưng đã tiến hóa tối đa!" : "💪 Rèn luyện Stats ngoài đời để thú mau lớn!"}
+                          </span>
 
                           {/* Companion Setter */}
                           <div className="flex items-center gap-1.5 ml-auto select-none">

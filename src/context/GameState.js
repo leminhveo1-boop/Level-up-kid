@@ -30,7 +30,7 @@ const DEFAULT_REWARDS = [
   { id: "rp2", title: "Mua 🐺 Trứng Sói Chiến (Ấp sói nguyên tố hiếm)", cost: 80, currency: "heroCoins", type: "pet_egg", value: "wolf", parentApproved: false, rarity: "rare" },
   { id: "rp3", title: "Mua 🐉 Trứng Rồng Thần (Ấp rồng bay huyền thoại)", cost: 150, currency: "heroCoins", type: "pet_egg", value: "dragon", parentApproved: false, rarity: "legendary" },
   { id: "rp4", title: "Mua 🧪 Thuốc ấp phép ngẫu nhiên (Lửa, băng, ma thuật)", cost: 40, currency: "heroCoins", type: "pet_potion_random", value: "random", parentApproved: false, rarity: "rare" },
-  { id: "rp5", title: "Mua 🥩 Combo Thức ăn Thần Kỳ (Thịt + Kẹo + Lá)", cost: 30, currency: "heroCoins", type: "pet_food_all", value: "all", parentApproved: false, rarity: "common" },
+  { id: "rp5", title: "Mua 🧪 Bình Nước Thánh Hồi Phục Năng Lượng ⚡ (+15 Năng lượng)", cost: 45, currency: "heroCoins", type: "energy_potion", value: 15, parentApproved: false, rarity: "rare" },
 
   // Quà thực tế ngoài đời (Dùng Hero Coin 🪙)
   { id: "r5", title: "Một ly kem tươi siêu to khổng lồ 🍨", cost: 100, currency: "heroCoins", type: "perk", value: "ice_cream", parentApproved: false, rarity: "common" },
@@ -68,12 +68,23 @@ export function GameProvider({ children }) {
   // Pet & Mount states
   const [inventory, setInventory] = useState({
     eggs: { base: 0, dragon: 0, wolf: 0 },
-    potions: { fire: 0, ice: 0, magic: 0 },
-    foods: { meat: 0, candy: 0, leaf: 0 }
+    potions: { fire: 0, ice: 0, magic: 0 }
   });
   const [pets, setPets] = useState([]);
   const [activePet, setActivePet] = useState(null);
   const [activeMount, setActiveMount] = useState(null);
+
+  const totalStats = (stats?.strength || 0) + (stats?.intellect || 0) + (stats?.discipline || 0) + (stats?.creative || 0) + (stats?.help || 0);
+  const petLevel = Math.floor(totalStats / 50);
+  const feedProgress = Math.min(100, Math.floor((totalStats / 250) * 100));
+  const isMount = petLevel >= 5;
+
+  const enrichedPets = pets.map((p) => ({
+    ...p,
+    feedProgress: feedProgress,
+    isMount: isMount,
+    level: petLevel,
+  }));
 
   // Lists state
   const [tasks, setTasks] = useState(DEFAULT_TASKS);
@@ -227,12 +238,15 @@ export function GameProvider({ children }) {
         setScreenMinutesUsedToday(data.screenMinutesUsedToday || 0);
         setScreenRedeemsThisWeek(data.screenRedeemsThisWeek || 0);
 
-        // Load Pet & Mount systems with auto-healing
-        setInventory(data.inventory || {
+        // Load Pet & Mount systems with auto-healing and food removal migration
+        let loadedInventory = data.inventory || {
           eggs: { base: 0, dragon: 0, wolf: 0 },
-          potions: { fire: 0, ice: 0, magic: 0 },
-          foods: { meat: 0, candy: 0, leaf: 0 }
-        });
+          potions: { fire: 0, ice: 0, magic: 0 }
+        };
+        if (loadedInventory.foods) {
+          delete loadedInventory.foods;
+        }
+        setInventory(loadedInventory);
         setPets(data.pets || []);
         setActivePet(data.activePet !== undefined ? data.activePet : null);
         setActiveMount(data.activeMount !== undefined ? data.activeMount : null);
@@ -593,15 +607,8 @@ export function GameProvider({ children }) {
           [rolled]: prev.potions[rolled] + 1,
         },
       }));
-    } else if (reward.type === "pet_food_all") {
-      setInventory((prev) => ({
-        ...prev,
-        foods: {
-          meat: prev.foods.meat + 1,
-          candy: prev.foods.candy + 1,
-          leaf: prev.foods.leaf + 1,
-        },
-      }));
+    } else if (reward.type === "energy_potion") {
+      setEnergy((prev) => Math.min(100, prev + (reward.value || 15)));
     }
 
     confetti({
@@ -623,58 +630,45 @@ export function GameProvider({ children }) {
     setEnergy((prev) => Math.max(0, prev - 1));
     playSound("complete");
 
-    // Critical Mining chance (20% base if exercise buff is active, and Thú cưỡi activeMount cộng thêm 5%)
-    const activeMountObj = pets.find(p => p.id === activeMount);
-    const hasMountCritBuff = activeMountObj !== undefined;
-    const critChance = 0.20 + (hasMountCritBuff ? 0.05 : 0);
+    // Critical Mining chance (10% if exercise buff is active, and Thú cưỡi activeMount cộng thêm 5%)
+    const activeMountObj = enrichedPets.find(p => p.id === activeMount);
+    const hasMountCritBuff = activeMountObj !== undefined && activeMountObj.isMount;
+    const critChance = 0.10 + (hasMountCritBuff ? 0.05 : 0);
     const hasExerciseBuff = tasks.some(t => t.category === "strength" && t.completed);
     const isCriticalMining = (hasExerciseBuff || hasMountCritBuff) && Math.random() < critChance;
 
-    // 15% chance to drop Pet Materials (trứng, thuốc ấp, thức ăn) instead of coins
+    // 8% chance to drop Pet Materials (trứng, thuốc ấp) instead of coins
     const randDrop = Math.random();
-    if (randDrop < 0.15) {
+    if (randDrop < 0.08) {
       const materialRand = Math.random();
       let lootType = "common";
       let title = "";
       let rarityText = "Nguyên liệu 📦";
       
-      if (materialRand < 0.46) {
-        // ~7% is Food
-        const foodKeys = ["meat", "candy", "leaf"];
-        const foodEmojis = { meat: "🥩 Thịt Bò", candy: "🍬 Kẹo Ngọt", leaf: "🌿 Lá Cây" };
-        const selectedFood = foodKeys[Math.floor(Math.random() * foodKeys.length)];
-        
-        setInventory(prev => ({
-          ...prev,
-          foods: { ...prev.foods, [selectedFood]: prev.foods[selectedFood] + 1 }
-        }));
-        
-        title = `📦 Nhận 1 Thức ăn: ${foodEmojis[selectedFood]}`;
-        lootType = "rare";
-        rarityText = "Thức Ăn 🥩";
-      } else if (materialRand < 0.80) {
-        // ~5% is Potion
+      // 3% Egg, 5% Potion (total 8%, so threshold is 5/8 = 0.625)
+      if (materialRand < 0.625) {
+        // ~5% Potion
         const potionKeys = ["fire", "ice", "magic"];
         const potionEmojis = { fire: "🔥 Thuốc Lửa", ice: "❄️ Thuốc Băng", magic: "✨ Thuốc Thần Kỳ" };
         const selectedPotion = potionKeys[Math.floor(Math.random() * potionKeys.length)];
         
         setInventory(prev => ({
           ...prev,
-          potions: { ...prev.potions, [selectedPotion]: prev.potions[selectedPotion] + 1 }
+          potions: { ...prev.potions, [selectedPotion]: (prev.potions[selectedPotion] || 0) + 1 }
         }));
         
         title = `🧪 Nhận 1 Thuốc ấp: ${potionEmojis[selectedPotion]}`;
         lootType = "epic";
         rarityText = "Thuốc Ấp 🔥";
       } else {
-        // ~3% is Egg
+        // ~3% Egg
         const eggKeys = ["base", "dragon", "wolf"];
         const eggEmojis = { base: "🥚 Trứng Thường", dragon: "🐉 Trứng Rồng", wolf: "🐺 Trứng Sói" };
         const selectedEgg = eggKeys[Math.floor(Math.random() * eggKeys.length)];
         
         setInventory(prev => ({
           ...prev,
-          eggs: { ...prev.eggs, [selectedEgg]: prev.eggs[selectedEgg] + 1 }
+          eggs: { ...prev.eggs, [selectedEgg]: (prev.eggs[selectedEgg] || 0) + 1 }
         }));
         
         title = `🥚 Nhận 1 Trứng hiếm: ${eggEmojis[selectedEgg]}`;
@@ -714,31 +708,28 @@ export function GameProvider({ children }) {
       };
     }
 
-    // Default Coin Mining (85% of times)
+    // Default Coin Mining (92% of times)
     const rand = Math.random();
     let lootType = "common";
-    let coinReward = 1;
     let rarityText = "Thường ⚙️";
     let title = "Đá vụn";
+    let multiplier = 1;
 
-    // Streak bonus luck
-    let luckBonus = 0;
-    if (streak >= 14) luckBonus = 0.08;
-    else if (streak >= 3) luckBonus = 0.04;
-
-    // Habit Buffs
+    // Buff từ Ấn Pháp
     const hasReadingBuff = tasks.some(t => t.category === "intellect" && t.completed);
+    const hasStreakBuff = streak >= 3;
 
-    // Adjust chances
-    let legendaryChance = 0.02 + (hasReadingBuff ? 0.01 : 0);
-    let goldenChance = 0.08 + luckBonus;
-    let silverChance = 0.20;
+    // Adjust chances (Trí tuệ +1% hiếm/diamond/legendary, Streak +2% hiếm/sử thi)
+    let legendaryChance = 0.01 + (hasReadingBuff ? 0.01 : 0);
+    let diamondChance = 0.05 + (hasReadingBuff ? 0.01 : 0);
+    let epicChance = 0.12 + (hasStreakBuff ? 0.01 : 0);
+    let rareChance = 0.22 + (hasStreakBuff ? 0.01 : 0);
 
     if (rand < legendaryChance) {
       lootType = "legendary";
-      coinReward = Math.floor(Math.random() * 8) + 8; // 8 - 15 coins
-      rarityText = "Huyền Thoại ⚡";
-      title = "🌟 RƯƠNG BÁU THẦN THOẠI 🌟";
+      multiplier = 5;
+      rarityText = "Huyền Thoại 🏆";
+      title = "🏆 RƯƠNG HUYỀN THOẠI CỔ ĐẠI 🏆";
       setTimeout(() => {
         playSound("level-up");
         confetti({
@@ -748,11 +739,23 @@ export function GameProvider({ children }) {
           colors: ["#FFE4E6", "#D97706", "#FBBF24"],
         });
       }, 100);
-    } else if (rand < legendaryChance + goldenChance) {
+    } else if (rand < legendaryChance + diamondChance) {
+      lootType = "diamond";
+      multiplier = 3;
+      rarityText = "Kim Cương 💎";
+      title = "💎 RƯƠNG KIM CƯƠNG BẢO VẬT 💎";
+      setTimeout(() => {
+        confetti({
+          particleCount: 80,
+          spread: 60,
+          colors: ["#38BDF8", "#0284C7"],
+        });
+      }, 100);
+    } else if (rand < legendaryChance + diamondChance + epicChance) {
       lootType = "epic";
-      coinReward = Math.floor(Math.random() * 4) + 4; // 4 - 7 coins
+      multiplier = 2;
       rarityText = "Sử Thi 👑";
-      title = "👑 Hũ Xu Vàng Khổng Lồ 👑";
+      title = "👑 Hũ Xu Vàng Sử Thi 👑";
       setTimeout(() => {
         confetti({
           particleCount: 50,
@@ -760,17 +763,27 @@ export function GameProvider({ children }) {
           colors: ["#FBBF24", "#D97706"],
         });
       }, 100);
-    } else if (rand < legendaryChance + goldenChance + silverChance) {
+    } else if (rand < legendaryChance + diamondChance + epicChance + rareChance) {
       lootType = "rare";
-      coinReward = Math.floor(Math.random() * 2) + 2; // 2 - 3 coins
+      multiplier = 1.5;
       rarityText = "Hiếm 🔷";
       title = "🔷 Quặng Bạc Lấp Lánh 🔷";
     } else {
       lootType = "common";
-      coinReward = 1; // 1 coin flat to avoid fast inflation
+      multiplier = 1;
       rarityText = "Thường ⚙️";
       title = "⚙️ Mảnh Đá Nhỏ ⚙️";
     }
+
+    // Effort-based Coin calculation: Level, Streak, Stats, and Pet Level
+    const baseCoin = 1 + Math.floor(level / 2);
+    const streakBonus = Math.floor(streak / 3);
+    const statBonus = Math.floor(totalStats / 100);
+    const hasCompanion = activePet !== null || activeMount !== null;
+    const computedPetBonus = (hasCompanion && petLevel > 0) ? Math.floor(petLevel / 2) : 0;
+
+    let baseReward = baseCoin + streakBonus + statBonus + computedPetBonus;
+    let coinReward = Math.ceil(baseReward * multiplier);
 
     if (isCriticalMining) {
       coinReward = coinReward * 2;
@@ -941,8 +954,7 @@ export function GameProvider({ children }) {
     ]);
     setInventory({
       eggs: { base: 0, dragon: 0, wolf: 0 },
-      potions: { fire: 0, ice: 0, magic: 0 },
-      foods: { meat: 0, candy: 0, leaf: 0 }
+      potions: { fire: 0, ice: 0, magic: 0 }
     });
     setPets([]);
     setActivePet(null);
@@ -1014,65 +1026,9 @@ export function GameProvider({ children }) {
   };
 
   // Feed Pet logic
+  // Feed Pet logic (disabled/removed in favor of auto-growth)
   const feedPet = (petId, foodType) => {
-    if (inventory.foods[foodType] < 1) {
-      return { success: false, message: "Không đủ Thức ăn! ❌" };
-    }
-
-    const pet = pets.find((p) => p.id === petId);
-    if (!pet) return { success: false, message: "Không tìm thấy thú cưng! ❌" };
-    if (pet.feedProgress >= 100) return { success: false, message: "Thú cưng đã đạt cấp tối đa và đang là Thú cưỡi! 💖" };
-
-    // Deduct food
-    setInventory((prev) => ({
-      ...prev,
-      foods: { ...prev.foods, [foodType]: prev.foods[foodType] - 1 },
-    }));
-
-    // Check if favorite food
-    // fire -> meat, ice -> candy, magic -> leaf
-    const favFoodMap = {
-      fire: "meat",
-      ice: "candy",
-      magic: "leaf",
-    };
-
-    const isFavorite = favFoodMap[pet.element] === foodType;
-    const gain = isFavorite ? 25 : 10;
-    const nextProgress = Math.min(100, pet.feedProgress + gain);
-    const becameMount = nextProgress >= 100 && !pet.isMount;
-
-    setPets((prev) =>
-      prev.map((p) => {
-        if (p.id === petId) {
-          return {
-            ...p,
-            feedProgress: nextProgress,
-            isMount: p.isMount || nextProgress >= 100,
-          };
-        }
-        return p;
-      })
-    );
-
-    playSound("complete");
-
-    if (becameMount) {
-      setTimeout(() => {
-        playSound("level-up");
-        confetti({
-          particleCount: 150,
-          spread: 80,
-          colors: ["#FFE4E6", "#D97706", "#FBBF24"],
-        });
-      }, 100);
-      return { success: true, message: `Thú cưng ${pet.name} đã tiến hóa thành THÚ CƯỠI khổng lồ oai phong! 🦖🌟`, evolved: true };
-    }
-
-    return { 
-      success: true, 
-      message: `Đã cho ${pet.name} ăn ${foodType === "meat" ? "Thịt Bò 🥩" : foodType === "candy" ? "Kẹo Ngọt 🍬" : "Lá Cây 🌿"}! Thân mật +${gain}% ${isFavorite ? "🔥 (Món khoái khẩu!)" : "🌸"}`
-    };
+    return { success: false, message: "Thú cưng giờ đây tự động lớn lên theo nỗ lực rèn luyện của con! Không cần cho ăn thức ăn nữa. 💪" };
   };
 
   // Set active companion (type: 'pet' or 'mount')
@@ -1142,7 +1098,7 @@ export function GameProvider({ children }) {
         mineTreasure,
         inventory,
         setInventory,
-        pets,
+        pets: enrichedPets,
         setPets,
         activePet,
         setActivePet,
