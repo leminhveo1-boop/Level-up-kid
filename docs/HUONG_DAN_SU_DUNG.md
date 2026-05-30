@@ -74,6 +74,38 @@ Con sẽ thấy dashboard với:
 - Thanh EXP & cấp độ
 - 5 chỉ số sức mạnh (Thể Lực, Trí Tuệ, Kỷ Luật, Sáng Tạo, Giúp Đỡ)
 
+### Bước 5: Thêm Game Vào Màn Hình Chính Điện Thoại 📲
+
+Để con mở game nhanh như app thật, hãy thêm bookmark vào màn hình chính:
+
+#### 🍎 iPhone / iPad (Safari)
+
+1. Mở **Safari** → truy cập `level-up-kids.vercel.app`
+2. Bấm nút **Chia sẻ** (icon ⬆️ hình vuông có mũi tên ở thanh dưới)
+3. Kéo xuống → chọn **"Thêm vào MH chính"** (Add to Home Screen)
+4. Đặt tên: `Level Up Kid` (hoặc tên con cho vui 😄)
+5. Bấm **"Thêm"** (Add)
+6. Icon game sẽ xuất hiện trên màn hình chính — bấm vào là chơi ngay!
+
+> ⚠️ **Lưu ý iPhone:** Phải dùng **Safari** (không phải Chrome/Firefox). Dữ liệu game chỉ lưu trong Safari.
+
+#### 🤖 Android (Chrome)
+
+1. Mở **Chrome** → truy cập `level-up-kids.vercel.app`
+2. Bấm nút **⋮** (3 chấm dọc) ở góc phải trên
+3. Chọn **"Thêm vào màn hình chính"** (Add to Home screen)
+4. Đặt tên: `Level Up Kid`
+5. Bấm **"Thêm"** → chọn **"Thêm tự động"** hoặc kéo icon ra màn hình
+6. Xong! Game xuất hiện như app trên màn hình chính 🎮
+
+> ⚠️ **Lưu ý Android:** Nên dùng **Chrome** để có trải nghiệm tốt nhất.
+
+#### 💡 Mẹo thêm:
+- **Đặt icon vào trang chính** để con dễ thấy và mở nhanh
+- **Tạo folder riêng** "Game Học Tập" nếu muốn gọn gàng
+- Khi mở từ icon, game sẽ chạy **toàn màn hình** như app thật (không có thanh địa chỉ)
+- **Quan trọng:** Không xóa dữ liệu trình duyệt / xóa cache, vì game lưu tiến trình ở đó
+
 ---
 
 ## 📱 HƯỚNG DẪN TỪNG TRANG
