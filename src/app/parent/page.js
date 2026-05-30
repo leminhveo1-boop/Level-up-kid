@@ -1140,7 +1140,7 @@ export default function ParentDashboard() {
                   ⚡ 1. Hệ Thống Năng Lượng & Đào Mỏ
                 </p>
                 <p className="pl-5 text-gray-600 text-[10px] leading-relaxed">
-                  • <strong>Năng Lượng ⚡:</strong> Khi con hoàn thành nhiệm vụ hằng ngày sẽ nhận được Năng Lượng (tối đa 100 ⚡). Năng Lượng dùng để đào mỏ ngẫu nhiên nhận Hero Coin 🪙.
+                  • <strong>Năng Lượng ⚡:</strong> Khi con hoàn thành nhiệm vụ hằng ngày sẽ nhận được Năng Lượng (tối đa 100 ⚡). Năng Lượng dùng để đào mỏ nhận Hero Coin 🪙. Số xu nhận được phụ thuộc vào nỗ lực rèn luyện của con (Cấp độ, Streak, Stats và Cấp thú cưng) chứ không còn dựa vào may rủi.
                 </p>
                 <p className="pl-5 text-gray-600 text-[10px] leading-relaxed">
                   • <strong>Ấn Pháp Anh Hùng:</strong> Con làm thói quen tốt như đọc sách hay thể dục ngoài đời sẽ kích hoạt Ấn Pháp Trí Tuệ/Thể Lực giúp tăng tỷ lệ tìm rương hiếm hoặc nổ Cú Đập Sức Mạnh x2 xu trong Hang Đào Mỏ!
@@ -1185,9 +1185,9 @@ export default function ParentDashboard() {
                   🐾 5. Quà Tặng & Cửa Hàng Thú Cưng
                 </p>
                 <p className="pl-5 text-gray-600 text-[10px] leading-relaxed">
-                  • **Duyệt mua trong Shop:** Con có thể tự tích lũy Hero Coins 🪙 đào mỏ để đổi Trứng hiếm (Sói, Rồng), Thuốc phép & combo Thức ăn trong Cửa Hàng. Bố mẹ nhập mã PIN để xác nhận trao vật phẩm cho con.<br />
-                  • **Phát tặng thủ công:** Bố mẹ sử dụng bảng quà tặng ở cuối Phòng Quản Trị để phát trực tiếp Trứng, Thuốc phép hoặc Thức ăn cho con làm phần thưởng khích lệ.<br />
-                  • **Ấn pháp tiến hóa:** Thú cưng đạt 100% thân mật tiến hóa thành **Thú Cưỡi 🦖**, giúp con hồi thêm **+10% Năng lượng ⚡** khi làm việc tốt ngoài đời và **+5% tỷ lệ nổ Cú Đập Sức Mạnh 🔥** khi đào mỏ!
+                  • **Duyệt mua trong Shop:** Con có thể tự tích lũy Hero Coins 🪙 đào mỏ để đổi Trứng hiếm (Sói, Rồng), Thuốc phép & bình nước tăng năng lượng trong Cửa Hàng. Bố mẹ nhập mã PIN để xác nhận trao vật phẩm cho con.<br />
+                  • **Phát tặng thủ công:** Bố mẹ sử dụng bảng quà tặng ở cuối Phòng Quản Trị để phát trực tiếp Trứng hoặc Thuốc phép cho con làm phần thưởng khích lệ.<br />
+                  • **Tiến hóa tự động:** Thú cưng tự động lớn lên và tăng cấp dựa trên tổng chỉ số rèn luyện Stats của con. Đạt từ cấp 5 trở lên sẽ tự động tiến hóa thành **Thú Cưỡi 🦖**, giúp con hồi thêm **+10% Năng lượng ⚡** khi làm việc tốt ngoài đời và **+5% tỷ lệ nổ Cú Đập Sức Mạnh 🔥** khi đào mỏ!
                 </p>
               </div>
 

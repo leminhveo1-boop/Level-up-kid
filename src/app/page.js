@@ -41,8 +41,8 @@ export default function LandingPage() {
       emoji: "⛏️",
       title: "Bước 3: Đào Mỏ Tìm Kho Báu",
       subtitle: "Động Khai Thác ⛏️",
-      description: "Năng lượng ⚡ từ nhiệm vụ dùng để đào mỏ. Con click vào viên đá ma thuật → nhận Hero Coin 🪙 ngẫu nhiên. Hoàn thành thể dục/đọc sách sẽ kích hoạt Ấn Pháp tăng tỷ lệ trúng hiếm!",
-      tip: "💡 Streak ≥3 ngày kích hoạt Ấn Pháp Chuyên Cần tăng tỷ lệ trúng bạc/vàng!",
+      description: "Năng lượng ⚡ từ nhiệm vụ dùng để đào mỏ. Số xu nhận được phụ thuộc trực tiếp vào Cấp độ, Chuỗi Streak, Chỉ số rèn luyện của con và Cấp thú cưng đi kèm chứ không còn phụ thuộc may rủi ngẫu nhiên!",
+      tip: "💡 Thú cưng tự động lớn lên theo nỗ lực rèn luyện tăng chỉ số stats ngoài đời của con!",
       color: "from-amber-dark to-amber",
     },
     {
